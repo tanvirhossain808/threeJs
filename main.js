@@ -1,3 +1,4 @@
+import "./style.css"
 import gsap from 'gsap';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
@@ -11,13 +12,24 @@ const cursor = {
     y: 0
 };
 const sizes = {
-    width: 800,
-    height: 600
+    // width: 800,
+    // height: 600
+    width: window.innerWidth,
+    height: window.innerHeight
+
 };
+window.addEventListener("resize", () => {
+    sizes.width = window.innerWidth;
+    sizes.height = window.innerHeight;
+    camera.aspect = sizes.width / sizes.height;
+    camera.updateProjectionMatrix();
+    renderer.setSize(sizes.width, sizes.height)
+})
 window.addEventListener("mousemove", (e) => {
     // console.log(e.clientY);
     cursor.x = -(e.clientX / sizes.width - .5);
     cursor.y = -(e.clientY / sizes.height - .5);
+
     // console.log(cursor.y);
 });
 
@@ -90,6 +102,7 @@ const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true
 // controls.target.y = 1;
 // controls.update();
+// controls.enabled = false
 
 
 /*  */
@@ -103,6 +116,19 @@ controls.enableDamping = true
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas
 })
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+window.addEventListener('dblclick', () => {
+    if (!document.fullscreenElement) {
+        canvas.requestFullscreen();
+    }
+    else {
+        console.log('object');
+        document.exitFullscreen()
+    };
+})
+
+
+
 let time = Date.now();
 renderer.setSize(sizes.width, sizes.height);
 const clock = new THREE.Clock();
